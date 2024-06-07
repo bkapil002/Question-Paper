@@ -1,23 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import Header from './component/Header';
+import { Outlet } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import context from './context/index';
+import { useDispatch } from 'react-redux';
+import UserLink from './commen/index';
+import { setUserData } from './store/userSlice';
+import { useEffect } from 'react';
 
 function App() {
+  const dispatch = useDispatch();
+
+  const fetchUserData = async () => {
+    try {
+      const dataResponse = await fetch(UserLink.userData.url, {
+        method: UserLink.userData.method,
+        credentials: 'include',
+      });
+
+      if (!dataResponse.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+
+      const dataApi = await dataResponse.json();
+
+      if (dataApi.success) {
+        dispatch(setUserData(dataApi.data));
+      } else {
+        throw new Error(dataApi.message);
+      }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchUserData();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <context.Provider value={{ fetchUserData }}>
+        <ToastContainer position='top-center' />
+        <Header />
+        <main>
+          <Outlet />
+        </main>
+      </context.Provider>
     </div>
   );
 }

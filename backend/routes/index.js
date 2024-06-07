@@ -1,0 +1,30 @@
+const express = require('express')
+const routes = express.Router()
+const userSignUp = require('../container/userSigin')
+const userLogin = require('../container/userLogin')
+const authToken = require('../token/authToken')
+const userData = require('../container/userData')
+const userLogout  = require('../container/userLogout')
+const userUser = require('../container/allUser')
+const upadateRole = require('../container/upadteRole')
+const getPaper = require('../container/getPaper')
+const uplaodePaper = require('../container/UploadePaper')
+const DeletePaper  = require('../container/DeletePaper')
+const updatePaper  = require('../container/updatePaper')
+const catgery = require('../container/catgery')
+routes.post('/userLogin' ,userLogin )
+routes.post('/userSignUp' , userSignUp)
+routes.get('/user-details',authToken,userData)
+routes.get('/logout',userLogout)
+
+routes.get('/userUser',authToken, userUser)
+routes.post('/upadateRole',authToken,upadateRole)
+
+routes.get('/getPaper' , getPaper)
+routes.post('/uplaodePaper' ,authToken,uplaodePaper )
+
+routes.post('/updatePaper' ,authToken,updatePaper )
+routes.delete('/DeletePaper/:id', DeletePaper)
+
+routes.post('/catgery' , catgery)
+module.exports = routes
